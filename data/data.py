@@ -8,6 +8,3 @@ precaution_data = pd.read_csv('data/precaution.csv')
 
 print(symptom_data.head())
 print(precaution_data.head())
-
-
-
