@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Fancy Home Page with Transparent Circles</title>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+            body {
+                font-family: 'Pacifico', cursive;
+                background-color: #f0f0f0;
+                margin: 0;
+                padding: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                overflow: hidden;
+            }
+            .container {
+                text-align: center;
+                background-color: #fff;
+                padding: 50px;
+                border-radius: 10px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                z-index: 2;
+                position: relative;
+            }
+            h1 {
+                color: #333;
+            }
+            p {
+                color: #666;
+            }
+            .button {
+                padding: 20px 40px;
+                background-color: #007BFF;
+                color: white;
+                border: none;
+                border-radius: 10px;
+                cursor: pointer;
+                font-size: 1.2em;
+                margin: 10px;
+            }
+            canvas {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 1;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas id="circleCanvas"></canvas>
+        <div class="container">
+            <h1>Welcome to the Fancy Home Page!</h1>
+            <p>Hello, welcome to the local website!</p>
+            <button class="button" id="button1">Button 1</button>
+            <button class="button" id="button2">Button 2</button>
+            <button class="button" id="button3">Button 3</button>
+
+        </div>
+        <script>
+            const canvas = document.getElementById('circleCanvas');
+            const ctx = canvas.getContext('2d');
+        
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        
+            class Circle {
+                constructor(x, y, dx, dy, radius, color) {
+                    this.x = x;
+                    this.y = y;
+                    this.dx = dx;
+                    this.dy = dy;
+                    this.radius = radius;
+                    this.color = color;
+                }
+        
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.fill();
+                    ctx.closePath();
+                }
+        
+                update() {
+                    if (this.x + this.radius > canvas.width || this.x - this.radius < 0) {
+                        this.dx = -this.dx;
+                    }
+                    if (this.y + this.radius > canvas.height || this.y - this.radius < 0) {
+                        this.dy = -this.dy;
+                    }
+        
+                    this.x += this.dx;
+                    this.y += this.dy;
+        
+                    this.draw();
+                }
+            }
+        
+            const colors = [
+                'rgba(255, 87, 51, 0.6)',
+                'rgba(51, 255, 87, 0.6)',
+                'rgba(51, 87, 255, 0.6)',
+                'rgba(255, 51, 161, 0.6)',
+                'rgba(51, 255, 245, 0.6)',
+                'rgba(255, 140, 51, 0.6)',
+                'rgba(161, 51, 255, 0.6)',
+                'rgba(255, 211, 51, 0.6)',
+                'rgba(51, 255, 137, 0.6)',
+                'rgba(255, 51, 62, 0.6)'
+            ];
+            const circles = [];
+        
+            for (let i = 0; i < 18; i++) {
+                const radius = Math.random() * 50 + 30;
+                const x = Math.random() * (canvas.width - radius * 2) + radius;
+                const y = Math.random() * (canvas.height - radius * 2) + radius;
+                const dx = (Math.random() - 0.5) * 6;
+                const dy = (Math.random() - 0.5) * 6;
+                const color = colors[i % colors.length];
+                circles.push(new Circle(x, y, dx, dy, radius, color));
+            }
+        
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                circles.forEach(circle => circle.update());
+                requestAnimationFrame(animate);
+            }
+        
+            animate();
+        
+            window.addEventListener('resize', () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            });
+        
+            // Button Click Event Listeners
+            document.getElementById('button1').addEventListener('click', () => {
+                alert('Button 1 clicked!');
+            });
+
+            document.getElementById('button2').addEventListener('click', () => {
+                if(document.body.style.backgroundColor === 'lightblue') {
+                    document.body.style.backgroundColor = '#f0f0f0';
+                    return;
+                }
+                document.body.style.backgroundColor = 'lightblue';
+            });
+
+            document.getElementById('button3').addEventListener('click', () => {
+                circles.forEach(circle => {
+                    circle.dx *= 1.2; // Increase speed
+                    circle.dy *= 1.2;
+                });
+            });
+
+        </script>
+        
+    </body>
+    </html>
